@@ -1,0 +1,21 @@
+---
+# roles/generated_vpns/tasks/main.yaml
+# This YAML file uses Jinja templates stored under 'roles/generate_vpns/templates' to build host-specific variables for provisioning and testing.
+# The generated files are placed in respective hostname directories under host_vars
+
+- name: Check if 'host_vars' directory is present
+  file: path=host_vars state=directory
+  run_once: true
+
+- name: Check if hostname directories are present in host_vars
+  file: path=host_vars/{{ inventory_hostname }} state=directory
+
+- name: Generate Customer VPN variables files (Used to build config)
+  template: >
+    src=main.conf.j2
+    dest=host_vars/{{inventory_hostname}}/generated_vpn_variables.yaml
+
+- name: Generate neighbor CE info (Used for testing)
+  template: >
+    src=main.conf.ceinfo.j2
+    dest=host_vars/{{inventory_hostname}}/generated_neighborCE_info.yaml
