@@ -1,0 +1,41 @@
+---
+- name: Get Device facts
+  hosts: all
+  connection: local
+  gather_facts: no
+  roles:
+    - Juniper.junos
+  vars:
+    credential:
+      host: "{{ ansible_host }}"
+      port: "{{ netconf_port }}"
+      username: "{{ ansible_user }}"
+      password: "{{ ansible_ssh_pass }}"
+
+  tasks:
+  - name: Display all variables/facts known for a host
+    debug:
+      var: group_names
+
+  - name: Display all group_names
+    debug:
+      var: group_names
+
+  - name: Display all variables/facts know for a group
+    debug:
+      var: groups['all']
+
+  - name: Checking NETCONF connectivity
+    wait_for: host={{ ansible_host }} port={{ netconf_port }} timeout=5
+
+  - name: Get JUNOS-style facts
+    junos_get_facts:
+      host: "{{ inventory_hostname }}"
+      user: automation
+      passwd: automation123
+
+  - name: Get facts from devices running Junos
+    junos_facts:
+      provider: "{{ credential }}"
+    register: junos
+  

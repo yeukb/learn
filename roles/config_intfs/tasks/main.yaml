@@ -1,0 +1,9 @@
+---
+- name: Check if directory {{ build_dir }} is present
+  file: path={{ build_dir }} state=directory
+#  run_once: true
+
+- name: Building common configuration
+  template: >
+    src=main.conf.j2
+    dest={{ build_dir }}/intf.conf.part
